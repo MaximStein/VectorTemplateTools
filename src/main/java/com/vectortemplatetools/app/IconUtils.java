@@ -1,54 +1,47 @@
 package com.vectortemplatetools.app;
 
-import java.io.FileInputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.List;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.batik.anim.dom.SAXSVGDocumentFactory;
-import org.apache.batik.dom.GenericDOMImplementation;
 import org.apache.batik.util.XMLResourceDescriptor;
-import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import com.vectortemplatetools.vectorTemplates.SVGTemplate;
-import com.vectortemplatetools.vectorTemplates.SVGTemplate.DocumentChangedHandler;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.layout.Pane;
 
 public class IconUtils {
 
+
 	public static Element getShape(String fileName) {
-		return getShape(fileName, null); 
-	}
-	
-	public static Document getIconsDocument() {
-		return SVGDocUtils.getDocumentFromFile("graphics/icons.svg");
-	}
-	
-	public static Element getShape(String fileName, String shapeName) {
 		String parser = XMLResourceDescriptor.getXMLParserClassName();
 		SAXSVGDocumentFactory f = new SAXSVGDocumentFactory(parser);
 		try {
-			var svg = f.createDocument(null, new FileInputStream("graphics/"+fileName));
-			
-			if(shapeName != null)
-				return svg.getElementById(shapeName);
-			else {
-			
-				var children = svg.getFirstChild().getChildNodes();
-				
-				for(int i = 0;i<children.getLength();i++) {
-					var node = children.item(i);
-					
-					if(node.getNodeName() == "g" || node.getNodeName() == "path") {
-						return (Element) node;
-					}
+			var svg = f.createDocument(null, SVGTemplate.class.getResourceAsStream("icons/"+fileName));
+
+			var children = svg.getFirstChild().getChildNodes();
+
+			for(int i = 0;i<children.getLength();i++) {
+				var node = children.item(i);
+
+				if(node.getNodeName() == "g" || node.getNodeName() == "path") {
+					return (Element) node;
 				}
-				
-				return (Element) svg.getDocumentElement().getFirstChild();
 			}
+
+			System.err.println("no shapes found");
+
+
+			return (Element) svg.getDocumentElement().getFirstChild();
+
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -58,22 +51,28 @@ public class IconUtils {
 		}
 		return null;
 	}
-	
-	public static HashMap<String, Element> getAllShapes() {
-		var map = new HashMap<String, Element>();
-		for(String str:getShapeNames()) {
-			map.put(str, getShape(str));
+
+
+	public static List<String> getShapeNames()  {
+		var iconsFolder = SVGTemplate.class.getResource("icons");
+
+		try {
+			var files = Files.walk(Path.of(iconsFolder.toURI()))
+					.map(f -> f.toString())
+					.filter( f -> f.endsWith(".svg"))
+					.map(f -> {
+						var pattern = Pattern.quote(System.getProperty("file.separator"));
+						var parts = f.split(pattern);
+						return parts[parts.length-1];
+					});
+
+			return files.collect(Collectors.toList());
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
 		}
-		
-		return map;
-	}
-	 
-	public static String[] getShapeNames() {
-		
-		 return new String[] {
-			"pfote.svg",
-			"herz.svg"
-		}; 
+		return null;
 		
 	/*	return new String[] {
 			"Telefon",

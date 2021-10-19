@@ -15,7 +15,7 @@ public class CalendarTemplate extends SVGTemplate {
 	}
 		
 		String[] jahre = {
-			"Januar","Februar","M�rz",
+			"Januar","Februar","März",
 			"April","Mai","Juni",
 			"Juli","August","September",
 			"Oktober","November","Dezember",

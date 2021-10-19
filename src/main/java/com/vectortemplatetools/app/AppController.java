@@ -21,8 +21,7 @@ import javafx.scene.web.WebView;
 public class AppController {
 
 	public static AppController instance;
-	
-	
+
 	@FXML
 	ChoiceBox<SVGTemplate> templateChoiceBox;
 
@@ -57,11 +56,7 @@ public class AppController {
 	}
 
 	public void initialize() {
-
-
-
 		DocumentChangedHandler dch = (content) -> {
-			System.out.println(content);
 			loadWebViewContent(content);
 		};
 

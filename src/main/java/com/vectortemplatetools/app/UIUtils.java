@@ -188,32 +188,28 @@ public class UIUtils {
 
 		iconSelect.valueProperty().addListener((a, old, newVal) -> {
 			var iconShape = IconUtils.getShape(newVal);
-
 			Element placeholder = t.svg.getElementById("iconPlaceholder");
-
 			var icon = t.svg.getElementById("icon");
 
 			if (icon != null) {
-				while (icon.hasChildNodes())
-					icon.removeChild(icon.getFirstChild());
-			} else {
-				icon = t.svg.createElement(iconShape.getNodeName());
-				//icon = (Element) t.svg.importNode(iconShape, true);
-				icon.setAttribute("id", "icon");
+				icon.getParentNode().removeChild(icon);
+			}
 
-				if (placeholder != null) {
-					placeholder.getParentNode().appendChild(icon);
-					var scale = t.getIconScale() == 1d ? ""
-							: " scale(" + t.getIconScale() + " " + t.getIconScale() + ")";
-					
-					var width = Double.parseDouble(placeholder.getAttribute("width"));
-					var x = Double.parseDouble(placeholder.getAttribute("x"));
-					
-					var transform = "translate(" +(-x-width)  + " " + placeholder.getAttribute("y")
-							+ ")";
-					transform += scale;
-					icon.setAttribute("transform", transform);
-				}
+			icon = t.svg.createElement("g");
+			icon.setAttribute("id", "icon");
+
+			if (placeholder != null) {
+				placeholder.getParentNode().appendChild(icon);
+				var scale = t.getIconScale() == 1d ? ""
+						: " scale(" + t.getIconScale() + " " + t.getIconScale() + ")";
+
+				var width = Double.parseDouble(placeholder.getAttribute("width"));
+				var x = Double.parseDouble(placeholder.getAttribute("x"));
+
+				var transform = "translate(" +(-x-width)  + " " + placeholder.getAttribute("y")
+						+ ")";
+				transform += scale;
+				icon.setAttribute("transform", transform);
 			}
 
 			/*var parent = iconShape.getParentNode();

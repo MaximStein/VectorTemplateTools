@@ -36,15 +36,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import com.vectortemplatetools.app.LaserSetting;
-import com.vectortemplatetools.app.IconUtils;
 import com.vectortemplatetools.app.SVGDocUtils;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 
 public abstract class SVGTemplate {
 	public String fileName;
@@ -90,7 +83,7 @@ public abstract class SVGTemplate {
 
 		String parser = XMLResourceDescriptor.getXMLParserClassName();
 		SAXSVGDocumentFactory f = new SAXSVGDocumentFactory(parser);
-		svg = f.createDocument(null,SVGTemplate.class.getResourceAsStream(fileName));
+		svg = f.createDocument(null,SVGTemplate.class.getResourceAsStream("templates/"+fileName));
 
 	}
 
@@ -197,7 +190,7 @@ public abstract class SVGTemplate {
 			style = SVGDocUtils.setColorStyleAttribute(style, "stroke", c);
 		}
 		
-		System.out.println(elementId+"_"+style);
+
 		el.setAttribute("style", style);
 		docChanged();
 	}
