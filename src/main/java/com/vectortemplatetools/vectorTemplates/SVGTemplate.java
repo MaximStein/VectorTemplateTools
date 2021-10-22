@@ -1,10 +1,7 @@
 
 package com.vectortemplatetools.vectorTemplates;
 
-import java.awt.Canvas;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontMetrics;
+import java.awt.*;
 import java.awt.font.GlyphVector;
 import java.awt.font.TextAttribute;
 import java.io.FileInputStream;
@@ -24,6 +21,7 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import javafx.geometry.Rectangle2D;
 import org.apache.batik.anim.dom.SAXSVGDocumentFactory;
 import org.apache.batik.dom.GenericDOMImplementation;
 import org.apache.batik.svggen.SVGGraphics2D;
@@ -38,6 +36,7 @@ import org.w3c.dom.Node;
 import com.vectortemplatetools.app.LaserSetting;
 import com.vectortemplatetools.app.SVGDocUtils;
 import javafx.scene.layout.Pane;
+import org.w3c.dom.css.Rect;
 
 public abstract class SVGTemplate {
 	public String fileName;
@@ -84,7 +83,7 @@ public abstract class SVGTemplate {
 		String parser = XMLResourceDescriptor.getXMLParserClassName();
 		SAXSVGDocumentFactory f = new SAXSVGDocumentFactory(parser);
 		svg = f.createDocument(null,SVGTemplate.class.getResourceAsStream("templates/"+fileName));
-
+		getViewBox();
 	}
 
 	public void docChanged() {
@@ -95,8 +94,6 @@ public abstract class SVGTemplate {
 	public String toString() {
 		return this.fileName;
 	}
-
-
 
 	private Document getPathConvertedSVG() {
 		var clone = (Document) svg.cloneNode(true);
@@ -112,7 +109,6 @@ public abstract class SVGTemplate {
 				i--;
 			}
 		}
-
 		return clone;
 	}
 
@@ -201,6 +197,17 @@ public abstract class SVGTemplate {
 		
 	public double getIconScale() {	return 1;	}
 
-	
+	public java.awt.geom.Rectangle2D.Double getViewBox() {
+		var vb = svg.getElementsByTagName("svg").item(0).getAttributes().getNamedItem("viewBox");
+		if(vb == null)
+			return null;
+		var parts = vb.getNodeValue().split(" ");
+
+		return new java.awt.geom.Rectangle2D.Double(
+				Double.parseDouble(parts[0]),
+				Double.parseDouble(parts[1]),
+				Double.parseDouble(parts[2]),
+				Double.parseDouble(parts[3]));
+	}
 	
 }

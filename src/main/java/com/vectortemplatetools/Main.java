@@ -1,4 +1,4 @@
-package com.vectortemplatetools.app;
+package com.vectortemplatetools;
 
 import java.awt.image.BufferedImage;
 

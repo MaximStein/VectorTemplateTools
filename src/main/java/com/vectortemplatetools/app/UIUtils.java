@@ -1,9 +1,13 @@
 package com.vectortemplatetools.app;
 
 import java.util.Arrays;
+import java.util.List;
 
 import com.vectortemplatetools.vectorTemplates.SVGTemplate;
 import com.vectortemplatetools.vectorTemplates.SVGTemplateVariation;
+import javafx.geometry.Insets;
+import javafx.scene.layout.HBox;
+import javafx.scene.text.Font;
 import org.w3c.dom.Element;
 
 import javafx.beans.property.DoubleProperty;
@@ -21,16 +25,21 @@ public class UIUtils {
 
 	public static Node getFontsChoiceBox(SVGTemplate t, String... textElements) {
 
-		var fonts = new String[] { "Arial", "Architects Daughter" };
+		//var fonts = new String[] { "Arial", "Architects Daughter" };
+		var fonts = AppSettings.FONTS;
 
 		var fontSelect = new FlowPane();
 		fontSelect.setHgap(5);
 		fontSelect.setVgap(5);
 
 		for (var font : fonts) {
+			var url =
+			Font.loadFont(font, 12);
 			var button = new Button();
 			button.setText(font);
+
 			button.setStyle("-fx-font-family:'" + font + "'; -fx-font-size:100%");
+
 
 			button.setOnAction(event -> {
 				for (var el : textElements) {
@@ -212,15 +221,6 @@ public class UIUtils {
 				icon.setAttribute("transform", transform);
 			}
 
-			/*var parent = iconShape.getParentNode();
-
-			while (parent.getChildNodes().getLength() > 1) {
-				if (parent.getFirstChild() == iconShape)
-					parent.removeChild(parent.getLastChild());
-				else
-					parent.removeChild(parent.getFirstChild());
-			}*/
-
 			iconShape = (Element) t.svg.importNode(iconShape, true);
 			icon.appendChild(iconShape);
 
@@ -244,10 +244,11 @@ public class UIUtils {
 
 		var colors = new String[] { "white", "gray", "silver", "black" };
 
-		var container = new FlowPane();
+		var container = new HBox();
 
 		Arrays.stream(colors).forEach((c) -> {
 			Button b = new Button();
+
 			b.setOnAction((e) -> {
 				com.vectortemplatetools.vectorTemplates.SVGTemplate t = AppController.instance.getSelectedTemplate();
 
@@ -258,10 +259,10 @@ public class UIUtils {
 
 				if (el == null) {
 					var r = t.svg.createElement("rect");
-					r.setAttribute("x", "0");
+					r.setAttribute("x", "-500");
 					r.setAttribute("y", "0");
-					r.setAttribute("width", "800");
-					r.setAttribute("height", "900");
+					r.setAttribute("width", "1000");
+					r.setAttribute("height", "1000");
 					r.setAttribute("id", "bg");
 
 					var n = t.svg.getFirstChild();
@@ -277,9 +278,14 @@ public class UIUtils {
 			b.setPrefHeight(30);
 			b.setStyle("-fx-background-color:" + c + ";fx-border-width:0");
 
+			container.setSpacing(5);
 			container.getChildren().add(b);
 		});
 
 		return container;
+	}
+
+	public static List<String> getAvailableFonts() {
+	return null;
 	}
 }
